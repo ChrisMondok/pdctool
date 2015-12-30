@@ -1,0 +1,11 @@
+label > input {
+	display: block;
+}
+
+canvas {
+	border: 1px solid black;
+}
+
+figure {
+	margin: 1em;
+}

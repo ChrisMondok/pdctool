@@ -1,0 +1,78 @@
+var colors = [
+	{ name: "GColorBlack", value: 192, color: "#000000" },
+	{ name: "GColorOxfordBlue", value: 193, color: "#000055" },
+	{ name: "GColorDukeBlue", value: 194, color: "#0000AA" },
+	{ name: "GColorBlue", value: 195, color: "#0000FF" },
+	{ name: "GColorDarkGreen", value: 196, color: "#005500" },
+	{ name: "GColorMidnightGreen", value: 197, color: "#005555" },
+	{ name: "GColorCobaltBlue", value: 198, color: "#0055AA" },
+	{ name: "GColorBlueMoon", value: 199, color: "#0055FF" },
+	{ name: "GColorIslamicGreen", value: 200, color: "#00AA00" },
+	{ name: "GColorJaegerGreen", value: 201, color: "#00AA55" },
+	{ name: "GColorTiffanyBlue", value: 202, color: "#00AAAA" },
+	{ name: "GColorVividCerulean", value: 203, color: "#00AAFF" },
+	{ name: "GColorGreen", value: 204, color: "#00FF00" },
+	{ name: "GColorMalachite", value: 205, color: "#00FF55" },
+	{ name: "GColorMediumSpringGreen", value: 206, color: "#00FFAA" },
+	{ name: "GColorCyan", value: 207, color: "#00FFFF" },
+	{ name: "GColorBulgarianRose", value: 208, color: "#550000" },
+	{ name: "GColorImperialPurple", value: 209, color: "#550055" },
+	{ name: "GColorIndigo", value: 210, color: "#5500AA" },
+	{ name: "GColorElectricUltramarine", value: 211, color: "#5500FF" },
+	{ name: "GColorArmyGreen", value: 212, color: "#555500" },
+	{ name: "GColorDarkGray", value: 213, color: "#555555" },
+	{ name: "GColorLiberty", value: 214, color: "#5555AA" },
+	{ name: "GColorVeryLightBlue", value: 215, color: "#5555FF" },
+	{ name: "GColorKellyGreen", value: 216, color: "#55AA00" },
+	{ name: "GColorMayGreen", value: 217, color: "#55AA55" },
+	{ name: "GColorCadetBlue", value: 218, color: "#55AAAA" },
+	{ name: "GColorPictonBlue", value: 219, color: "#55AAFF" },
+	{ name: "GColorBrightGreen", value: 220, color: "#55FF00" },
+	{ name: "GColorScreaminGreen", value: 221, color: "#55FF55" },
+	{ name: "GColorMediumAquamarine", value: 222, color: "#55FFAA" },
+	{ name: "GColorElectricBlue", value: 223, color: "#55FFFF" },
+	{ name: "GColorDarkCandyAppleRed", value: 224, color: "#AA0000" },
+	{ name: "GColorJazzberryJam", value: 225, color: "#AA0055" },
+	{ name: "GColorPurple", value: 226, color: "#AA00AA" },
+	{ name: "GColorVividViolet", value: 227, color: "#AA00FF" },
+	{ name: "GColorWindsorTan", value: 228, color: "#AA5500" },
+	{ name: "GColorRoseVale", value: 229, color: "#AA5555" },
+	{ name: "GColorPurpureus", value: 230, color: "#AA55AA" },
+	{ name: "GColorLavenderIndigo", value: 231, color: "#AA55FF" },
+	{ name: "GColorLimerick", value: 232, color: "#AAAA00" },
+	{ name: "GColorBrass", value: 233, color: "#AAAA55" },
+	{ name: "GColorLightGray", value: 234, color: "#AAAAAA" },
+	{ name: "GColorBabyBlueEyes", value: 235, color: "#AAAAFF" },
+	{ name: "GColorSpringBud", value: 236, color: "#AAFF00" },
+	{ name: "GColorInchworm", value: 237, color: "#AAFF55" },
+	{ name: "GColorMintGreen", value: 238, color: "#AAFFAA" },
+	{ name: "GColorCeleste", value: 239, color: "#AAFFFF" },
+	{ name: "GColorRed", value: 240, color: "#FF0000" },
+	{ name: "GColorFolly", value: 241, color: "#FF0055" },
+	{ name: "GColorFashionMagenta", value: 242, color: "#FF00AA" },
+	{ name: "GColorMagenta", value: 243, color: "#FF00FF" },
+	{ name: "GColorOrange", value: 244, color: "#FF5500" },
+	{ name: "GColorSunsetOrange", value: 245, color: "#FF5555" },
+	{ name: "GColorBrilliantRose", value: 246, color: "#FF55AA" },
+	{ name: "GColorShockingPink", value: 247, color: "#FF55FF" },
+	{ name: "GColorChromeYellow", value: 248, color: "#FFAA00" },
+	{ name: "GColorRajah", value: 249, color: "#FFAA55" },
+	{ name: "GColorMelon", value: 250, color: "#FFAAAA" },
+	{ name: "GColorRichBrilliantLavender", value: 251, color: "#FFAAFF" },
+	{ name: "GColorYellow", value: 252, color: "#FFFF00" },
+	{ name: "GColorIcterine", value: 253, color: "#FFFF55" },
+	{ name: "GColorPastelYellow", value: 254, color: "#FFFFAA" },
+	{ name: "GColorWhite", value: 255, color: "#FFFFFF" },
+	{ name: "GColorClear", value: 0, color: "transparent" }
+];
+
+function getColor(n) {
+	var c;
+	if(n)
+		c = colors[n - 192];
+	else
+		c = colors[colors.length - 1];
+	if(c.value !== n)
+		console.warn("Looking up color "+n+" failed");
+	return c;
+}
