@@ -16,14 +16,14 @@ function createUploadForm() {
 	return form;
 }
 
-function drawPDCI(pdci, name) {
+function drawPDC(pdc, name) {
 	var canvas = document.createElement('canvas');
-	canvas.width = pdci.viewBox.width;
-	canvas.height = pdci.viewBox.height;
+	canvas.width = pdc.viewBox.width;
+	canvas.height = pdc.viewBox.height;
 	var context = canvas.getContext('2d');
 	context.fillStyle = 'purple';
 	context.fillRect(0, 0, canvas.width, canvas.height);
-	pdci.draw(context);
+	pdc.draw(context);
 
 	var figure = document.createElement('figure');
 	figure.appendChild(canvas);
@@ -40,22 +40,39 @@ function drawPDCI(pdci, name) {
 
 function filePicked(event) {
 	var file = event.target.files[0];
-	readPDCI(file, function(pdci) {
-		drawPDCI(pdci, file.name);
+	readPDC(file, function(pdc) {
+		drawPDC(pdc, file.name);
 	});
 }
 
-function readPDCI(file, callback) {
+function readPDC(file, callback) {
 	var reader = new FileReader();
 
 	reader.addEventListener('error', function(e) {
 		alert("Error reading file.");
 	});
 	reader.addEventListener('load', function(e) {
-		callback(new PebbleDrawCommandImage(e.target.result));
+		callback(loadPDC(e.target.result));
 	});
 
 	reader.readAsArrayBuffer(file);
+}
+
+function loadPDC(arrayBuffer) {
+	var reader = new BufferReader(arrayBuffer);
+
+	var magic = [0,0,0,0].map(function() {
+		return String.fromCharCode(reader.read8());
+	}).join('');
+
+	switch (magic) {
+		case "PDCI":
+			return new PebbleDrawCommandImage(arrayBuffer);
+		case "PDCS":
+			return new PebbleDrawCommandSequence(arrayBuffer);
+		default:
+			throw new Error("Bad magic.");
+	}
 }
 
 addEventListener('load', getThisPartyStarted);
