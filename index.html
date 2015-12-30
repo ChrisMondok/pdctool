@@ -12,5 +12,45 @@
 		<link rel="stylesheet" href="style.css"/>
 	</head>
 	<body>
+		<section id="pdc-list">
+			<header> PDC List </header>
+
+			<form>
+				<fieldset>
+					<legend> Add a PDC </legend>
+					<label>
+						<input type="file" multiple />
+					</label>
+					<label>
+						<input type="color" value="#551a8b" />
+						Background Color
+					</label>
+				</fieldset>
+			</form>
+		</section>
+
+		<section id="pdc-editor">
+			<header> PDC Editor </header>
+		</section>
+
+		<template data-role="viewer">
+			<figure>
+				<figcaption>
+					<span class="name"> </span>
+					<button data-action="delete"> X </button>
+				</figcaption>
+				<canvas width="24" height="24"> </canvas>
+				<div class="playback-controls">
+					<div>
+						<button data-action="toggle"> Play / Pause </button>
+						<button data-action="rewind"> Rewind </button>
+					</div>
+					<div>
+						<input data-action="seek" type="range" value="0" min="0" max="1000" />
+						<span class="elapsed"></span> / <span class="duration"></span>
+					</div>
+				</div>
+			</figure>
+		</template>
 	</body>
 </html>

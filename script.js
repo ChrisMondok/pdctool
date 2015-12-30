@@ -1,49 +1,38 @@
 addEventListener('load', function getThisPartyStarted() {
-	document.body.appendChild(createUploadForm());
+	var list = document.querySelector('#pdc-list');
+	list.querySelector('input[type=file]').addEventListener('change', filePicked);
 	requestAnimationFrame(drawAll);
+	document.body.className = 'list';
 });
 
 var viewers = [];
 
-function createUploadForm() {
-	var form = document.createElement('form');
-	var label = document.createElement('label');
-	label.textContent = 'Choose a PDC file';
-	form.appendChild(label);
-
-	var input = document.createElement('input');
-	input.type = 'file';
-	input.multiple = true;
-	label.appendChild(input);
-
-	input.addEventListener('change', filePicked);
-	return form;
-}
-
 function filePicked(event) {
+	var list = document.querySelector('#pdc-list');
 	for(var i = 0; i < event.target.files.length; i++) {
 		var file = event.target.files[i];
 		readPDC(file, function addViewer(pdc) {
-			var figure = document.createElement('figure');
+			var template = document.querySelector('template[data-role=viewer]').content;
+			var content = document.importNode(template, true);
+			var figure = content.querySelector('figure');
 
-			var viewer = new PDCViewer(pdc);
+			var viewer = new PDCViewer(pdc, content);
 			this.viewers.push(viewer);
-			viewer.appendTo(figure);
+			viewer.backgroundColor = list.querySelector('input[type=color]').value || 'purple';
 
-			var remove = document.createElement('button');
-			remove.textContent = 'X';
+			var remove = content.querySelector('[data-action=delete]');
 
-			var caption = document.createElement('figcaption');
+			var caption = content.querySelector('figcaption');
 			caption.textContent = file.name;
 			caption.appendChild(remove);
 			figure.insertBefore(caption, figure.firstChild);
 
 			remove.addEventListener('click', function removeViewer() {
 				viewers.splice(viewers.indexOf(viewer), 1);
-				document.body.removeChild(figure);
+				list.removeChild(figure);
 			});
 
-			document.body.appendChild(figure);
+			list.insertBefore(figure, list.querySelector('form'));
 		});
 	}
 	event.target.value = '';

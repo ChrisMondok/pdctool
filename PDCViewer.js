@@ -1,17 +1,13 @@
-function PDCViewer(pdc) {
+function PDCViewer(pdc, dom) {
 	this.pdc = pdc;
-	this.node = this.createDom(pdc);
 	this.backgroundColor = 'purple';
+	this.bindToDom(dom);
 	this.draw();
 	if(pdc instanceof PebbleDrawCommandSequence) {
 		this.elapsed = 0;
 		this.playing = true;
 	}
 }
-
-PDCViewer.prototype.appendTo = function(node) {
-	node.appendChild(this.node);
-};
 
 PDCViewer.prototype.draw = function(dt) {
 	this.context.fillStyle = this.backgroundColor;
@@ -25,69 +21,45 @@ PDCViewer.prototype.draw = function(dt) {
 	this.updateControls();
 };
 
-PDCViewer.prototype.createDom = function(pdc) {
-	var canvas = document.createElement('canvas');
-	canvas.width = pdc.viewBox.width;
-	canvas.height = pdc.viewBox.height;
+PDCViewer.prototype.bindToDom = function(dom) {
+	var canvas = dom.querySelector('canvas');
+	canvas.width = this.pdc.viewBox.width;
+	canvas.height = this.pdc.viewBox.height;
+
 	var context = canvas.getContext('2d');
 	this.context = canvas.getContext('2d');
 
-	var node = document.createElement('div');
-	node.appendChild(canvas);
+	this.playbackControls = dom.querySelector('.playback-controls');
+	this.playbackControls.style.display = this.pdc instanceof PebbleDrawCommandSequence
+		? 'block'
+		: 'none';
 
-	if(pdc instanceof PebbleDrawCommandSequence)
-		node.appendChild(this.createPlaybackControls());
-
-	return node;
-};
-
-PDCViewer.prototype.createPlaybackControls = function() {
-	var controls = document.createElement('div');
-	controls.className = 'playback-controls';
-
-	var play = document.createElement('button');
-	play.textContent = 'Play / Pause';
-	play.className = 'play-pause';
-	controls.appendChild(play);
+	var play = dom.querySelector('button[data-action=toggle]');
 
 	play.addEventListener('click', function togglePlayback() {
 		this.playing = !this.playing;
 	}.bind(this));
 
-	var rewind = document.createElement('button');
-	rewind.textContent = 'Rewind';
-	controls.appendChild(rewind);
-
+	var rewind = dom.querySelector('[data-action=rewind]');
 	rewind.addEventListener('click', function rewind() {
 		this.elapsed = 0;
-		this.node.querySelector('.playback-controls .scrubber').value = 0;
+		this.playbackControls.querySelector('[data-action=seek]').value = 0;
 	}.bind(this));
 
-	var scrubber = document.createElement('input');
-	scrubber.type = 'range';
-	scrubber.className = 'scrubber';
+	var scrubber = dom.querySelector('[data-action=seek]');
 	scrubber.min = 0;
 	scrubber.max = this.pdc.duration;
-	controls.appendChild(scrubber);
 
 	scrubber.addEventListener('input', function(e) {
 		this.elapsed = Number(e.target.value);
 	}.bind(this));
-
-	var timeDisplay = document.createElement('div');
-	timeDisplay.className = 'time-display';
-	controls.appendChild(timeDisplay);
-
-	return controls;
 };
 
 PDCViewer.prototype.updateControls = function() {
-	var controls = this.node.querySelector('.playback-controls');
-	if(!controls)
-		return;
-
-	controls.querySelector('.play-pause').textContent = this.playing ? 'Pause' : 'Play';
+	this.playbackControls.querySelector('[data-action=toggle]').textContent = this.playing ? 'Pause' : 'Play';
 	if(this.playing)
-		controls.querySelector('.scrubber').value = this.elapsed;
-	controls.querySelector('.time-display').textContent = Math.round(this.elapsed) + ' / ' + this.pdc.duration;
+		this.playbackControls.querySelector('[data-action=seek]').value = this.elapsed;
+
+	this.playbackControls.querySelector('.elapsed').textContent = (Math.floor(this.elapsed) / 1000).toFixed(3);
+	this.playbackControls.querySelector('.duration').textContent = (this.pdc.duration / 1000).toFixed(3);
 };

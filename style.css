@@ -1,5 +1,13 @@
-label > input {
+label {
 	display: block;
+}
+
+label + label {
+	margin-top: 1em;
+}
+
+body {
+	font-family: sans-serif;
 }
 
 canvas {
@@ -10,6 +18,17 @@ figure {
 	margin: 1em;
 }
 
-.playback-controls > * {
-	display: block;
+section {
+	margin: 1em;
+	padding: 1em;
+	background-color: #EEE;
 }
+
+figcaption button {
+	margin-left: 1em;
+}
+
+#pdc-list, #pdc-editor { display: none; }
+body.list #pdc-list { display: block; }
+body.edit #pdc-editor { display: block; }
+
