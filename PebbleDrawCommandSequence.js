@@ -25,11 +25,30 @@ function PebbleDrawCommandSequence(arrayBuffer) {
 	}
 }
 
-PebbleDrawCommandSequence.prototype.getFrame = function(time) {
-	return this.frames.find(function(frame) {
+PebbleDrawCommandSequence.prototype.getFrame = function getFrame(time) {
+	return this.frames.find(function checkFrameTiming(frame) {
 		return frame.startTime + frame.duration >= time;
 	}) || this.frames[this.frames.length - 1];
 };
+
+PebbleDrawCommandSequence.prototype.draw = function draw(context, time) {
+	this.getFrame(time).commands.forEach(function drawCommand(command) {
+		command.draw(context);
+	});
+};
+
+PebbleDrawCommandSequence.prototype.drawFrame = function drawFrame(context, frame) {
+	this.frames[frame].commands.forEach(function drawCommand(command) {
+		command.draw(context);
+	});
+};
+
+Object.defineProperty(PebbleDrawCommandSequence.prototype, 'duration', {
+	get: function getDuration() {
+		var lastFrame = this.frames[this.frames.length - 1];
+		return lastFrame.startTime + lastFrame.duration;
+	}
+});
 
 function readFrame(reader) {
 	var frame = {};
@@ -40,22 +59,3 @@ function readFrame(reader) {
 		frame.commands[i] = new PebbleDrawCommand(reader);
 	return frame;
 }
-
-PebbleDrawCommandSequence.prototype.draw = function(context, time) {
-	this.getFrame(time).commands.forEach(function(command) {
-		command.draw(context);
-	});
-};
-
-PebbleDrawCommandSequence.prototype.drawFrame = function(context, frame) {
-	this.frames[frame].commands.forEach(function(command) {
-		command.draw(context);
-	});
-};
-
-Object.defineProperty(PebbleDrawCommandSequence.prototype, 'duration', {
-	get: function() {
-		var lastFrame = this.frames[this.frames.length - 1];
-		return lastFrame.startTime + lastFrame.duration;
-	}
-});
