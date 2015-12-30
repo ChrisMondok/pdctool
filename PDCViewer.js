@@ -1,5 +1,6 @@
 function PDCViewer(pdc, dom) {
 	this.pdc = pdc;
+	this.overflow = Math.ceil(this.pdc.getOverflow());
 	this.backgroundColor = 'purple';
 	this.bindToDom(dom);
 	this.draw();
@@ -10,21 +11,36 @@ function PDCViewer(pdc, dom) {
 }
 
 PDCViewer.prototype.draw = function(dt) {
-	this.context.fillStyle = this.backgroundColor;
-	this.context.fillRect(0, 0, this.context.canvas.width, this.context.canvas.height);
 	if(this.playing) {
 		this.elapsed += dt;
 		if(this.elapsed > this.pdc.duration)
 			this.elapsed = 0;
 	}
+
+	this.context.save();
+	this.context.fillStyle = this.backgroundColor;
+	this.context.fillRect(0, 0, this.context.canvas.width, this.context.canvas.height);
+
+	this.context.translate(this.overflow, this.overflow);
+
+	if(this.overflow > 0) {
+		this.context.lineWidth = 1;
+		this.context.strokeStyle = 'white';
+		this.context.beginPath();
+		this.context.rect(0, 0, this.pdc.viewBox.width, this.pdc.viewBox.height);
+		this.context.stroke();
+	}
+
 	this.pdc.draw(this.context, this.elapsed || 0);
 	this.updateControls();
+
+	this.context.restore();
 };
 
 PDCViewer.prototype.bindToDom = function(dom) {
 	var canvas = dom.querySelector('canvas');
-	canvas.width = this.pdc.viewBox.width;
-	canvas.height = this.pdc.viewBox.height;
+	canvas.width = this.pdc.viewBox.width + 2 * this.overflow;
+	canvas.height = this.pdc.viewBox.height + 2 * this.overflow;
 
 	var context = canvas.getContext('2d');
 	this.context = canvas.getContext('2d');

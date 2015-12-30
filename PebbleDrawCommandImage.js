@@ -20,6 +20,22 @@ PebbleDrawCommandImage.prototype.draw = function drawImage(context, time) {
 		this.commands[i].draw(context);
 };
 
+PebbleDrawCommandImage.prototype.getOverflow = function() {
+	var bounds = this.getBounds();
+	var under = -Math.min(bounds.min.x, bounds.min.y);
+	var over = Math.max(bounds.max.x - this.viewBox.width, bounds.max.y - this.viewBox.height);
+	return Math.max(under, over);
+};
+
+PebbleDrawCommandImage.prototype.getBounds = function getBounds() {
+	return this.commands.map(function(cmd) {
+		return cmd.getBounds();
+	}).reduce(extendBounds, {
+		min: {x: 0, y: 0},
+		max: {x: this.viewBox.width, y: this.viewBox.height}
+	});
+};
+
 function readViewBox(reader) {
 	var width = reader.read16(),
 		height = reader.read16();

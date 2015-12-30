@@ -44,6 +44,28 @@ PebbleDrawCommand.prototype.draw = function drawCommand(ctx) {
 	}
 };
 
+PebbleDrawCommand.prototype.getBounds = function() {
+	return this.points.map(function(point) {
+		return {
+			min: {x: point.x, y: point.y},
+			max: {x: point.x, y: point.y}
+		};
+	}).reduce(extendBounds);
+};
+
+function extendBounds(a, b) {
+	return {
+		min: {
+			x: Math.min(a.min.x, b.min.x),
+			y: Math.min(a.min.x, b.min.x)
+		},
+		max: {
+			x: Math.max(a.max.x, b.max.x),
+			y: Math.max(a.max.x, b.max.x)
+		}
+	};
+}
+
 function drawPath(ctx) {
 	ctx.beginPath();
 

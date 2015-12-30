@@ -31,6 +31,16 @@ PebbleDrawCommandSequence.prototype.draw = function draw(context, time) {
 		commands[i].draw(context);
 };
 
+PebbleDrawCommandSequence.prototype.getOverflow = PebbleDrawCommandImage.prototype.getOverflow;
+
+PebbleDrawCommandSequence.prototype.getBounds = function getBounds() {
+	return this.frames.map(function getFrameBounds(frame) {
+		return frame.commands.map(function(command) {
+			return command.getBounds();
+		}, this).reduce(extendBounds);
+	}, this).reduce(extendBounds);
+};
+
 PebbleDrawCommandSequence.prototype.getFrame = function getFrame(time) {
 	return this.frames.find(function checkFrameTiming(frame) {
 		return frame.startTime + frame.duration >= time;
