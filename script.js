@@ -19,14 +19,31 @@ function createUploadForm() {
 }
 
 function filePicked(event) {
-	var file = event.target.files[0];
-	if(!file)
-		return;
-	readPDC(file, function(pdc) {
-		var viewer = new PDCViewer(pdc, file.name);
-		this.viewers.push(viewer);
-		viewer.appendTo(document.body);
-	});
+	for(var i = 0; i < event.target.files.length; i++) {
+		var file = event.target.files[i];
+		readPDC(file, function(pdc) {
+			var figure = document.createElement('figure');
+
+			var viewer = new PDCViewer(pdc);
+			this.viewers.push(viewer);
+			viewer.appendTo(figure);
+
+			var remove = document.createElement('button');
+			remove.textContent = 'X';
+
+			var caption = document.createElement('figcaption');
+			caption.textContent = file.name;
+			caption.appendChild(remove);
+			figure.insertBefore(caption, figure.firstChild);
+
+			remove.addEventListener('click', function() {
+				viewers.splice(viewers.indexOf(viewer), 1);
+				document.body.removeChild(figure);
+			});
+
+			document.body.appendChild(figure);
+		});
+	}
 	event.target.value = '';
 }
 

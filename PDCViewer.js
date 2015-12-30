@@ -1,6 +1,6 @@
-function PDCViewer(pdc, name) {
+function PDCViewer(pdc) {
 	this.pdc = pdc;
-	this.figure = this.createDom(pdc, name);
+	this.node = this.createDom(pdc);
 	this.backgroundColor = 'purple';
 	this.draw();
 	if(pdc instanceof PebbleDrawCommandSequence) {
@@ -10,7 +10,7 @@ function PDCViewer(pdc, name) {
 }
 
 PDCViewer.prototype.appendTo = function(node) {
-	node.appendChild(this.figure);
+	node.appendChild(this.node);
 };
 
 PDCViewer.prototype.draw = function(dt) {
@@ -25,32 +25,25 @@ PDCViewer.prototype.draw = function(dt) {
 	this.updateControls();
 };
 
-PDCViewer.prototype.createDom = function(pdc, name) {
+PDCViewer.prototype.createDom = function(pdc) {
 	var canvas = document.createElement('canvas');
 	canvas.width = pdc.viewBox.width;
 	canvas.height = pdc.viewBox.height;
 	var context = canvas.getContext('2d');
 	this.context = canvas.getContext('2d');
 
-	var figure = document.createElement('figure');
-	figure.appendChild(canvas);
+	var node = document.createElement('div');
+	node.appendChild(canvas);
 
 	if(pdc instanceof PebbleDrawCommandSequence)
-		figure.appendChild(this.createControls(pdc));
+		node.appendChild(this.createPlaybackControls());
 
-	if(name) {
-		var caption = document.createElement('figcaption');
-		caption.textContent = name;
-
-		figure.appendChild(caption);
-	}
-
-	return figure;
+	return node;
 };
 
-PDCViewer.prototype.createControls = function(pdc) {
+PDCViewer.prototype.createPlaybackControls = function() {
 	var controls = document.createElement('div');
-	controls.className = 'controls';
+	controls.className = 'playback-controls';
 
 	var play = document.createElement('button');
 	play.textContent = 'Play / Pause';
@@ -67,12 +60,14 @@ PDCViewer.prototype.createControls = function(pdc) {
 
 	rewind.addEventListener('click', function rewind() {
 		this.elapsed = 0;
+		this.node.querySelector('.playback-controls .scrubber').value = 0;
 	}.bind(this));
 
 	var scrubber = document.createElement('input');
 	scrubber.type = 'range';
+	scrubber.className = 'scrubber';
 	scrubber.min = 0;
-	scrubber.max = pdc.duration;
+	scrubber.max = this.pdc.duration;
 	controls.appendChild(scrubber);
 
 	scrubber.addEventListener('input', function(e) {
@@ -87,12 +82,12 @@ PDCViewer.prototype.createControls = function(pdc) {
 };
 
 PDCViewer.prototype.updateControls = function() {
-	var controls = this.figure.querySelector('.controls');
+	var controls = this.node.querySelector('.playback-controls');
 	if(!controls)
 		return;
 
 	controls.querySelector('.play-pause').textContent = this.playing ? 'Pause' : 'Play';
 	if(this.playing)
-		controls.querySelector('input').value = this.elapsed;
+		controls.querySelector('.scrubber').value = this.elapsed;
 	controls.querySelector('.time-display').textContent = Math.round(this.elapsed) + ' / ' + this.pdc.duration;
 };
