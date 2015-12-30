@@ -1,6 +1,7 @@
-function getThisPartyStarted() {
+addEventListener('load', function getThisPartyStarted() {
 	document.body.appendChild(createUploadForm());
-}
+	requestAnimationFrame(drawAll);
+});
 
 var viewers = [];
 
@@ -22,7 +23,7 @@ function createUploadForm() {
 function filePicked(event) {
 	for(var i = 0; i < event.target.files.length; i++) {
 		var file = event.target.files[i];
-		readPDC(file, function(pdc) {
+		readPDC(file, function addViewer(pdc) {
 			var figure = document.createElement('figure');
 
 			var viewer = new PDCViewer(pdc);
@@ -37,7 +38,7 @@ function filePicked(event) {
 			caption.appendChild(remove);
 			figure.insertBefore(caption, figure.firstChild);
 
-			remove.addEventListener('click', function() {
+			remove.addEventListener('click', function removeViewer() {
 				viewers.splice(viewers.indexOf(viewer), 1);
 				document.body.removeChild(figure);
 			});
@@ -54,7 +55,7 @@ function readPDC(file, callback) {
 	reader.addEventListener('error', function(e) {
 		alert("Error reading file.");
 	});
-	reader.addEventListener('load', function(e) {
+	reader.addEventListener('load', function fileLoaded(e) {
 		callback(loadPDC(e.target.result));
 	});
 
@@ -64,7 +65,7 @@ function readPDC(file, callback) {
 function loadPDC(arrayBuffer) {
 	var reader = new BufferReader(arrayBuffer);
 
-	var magic = [0,0,0,0].map(function() {
+	var magic = [0,0,0,0].map(function getChar() {
 		return String.fromCharCode(reader.read8());
 	}).join('');
 
@@ -83,13 +84,8 @@ function drawAll(ts) {
 	var delta = ts - lastTs;
 	lastTs = ts;
 
-	viewers.forEach(function(v) {
-		v.draw(delta);
-	});
+	for(var i = 0; i < viewers.length; i++)
+		viewers[i].draw(delta);
 
 	requestAnimationFrame(drawAll);
 }
-
-requestAnimationFrame(drawAll);
-
-addEventListener('load', getThisPartyStarted);

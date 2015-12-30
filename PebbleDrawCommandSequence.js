@@ -32,15 +32,15 @@ PebbleDrawCommandSequence.prototype.getFrame = function getFrame(time) {
 };
 
 PebbleDrawCommandSequence.prototype.draw = function draw(context, time) {
-	this.getFrame(time).commands.forEach(function drawCommand(command) {
-		command.draw(context);
-	});
+	var commands = this.getFrame(time).commands;
+	for(var i = 0; i < commands.length; i++)
+		commands[i].draw(context);
 };
 
 PebbleDrawCommandSequence.prototype.drawFrame = function drawFrame(context, frame) {
-	this.frames[frame].commands.forEach(function drawCommand(command) {
-		command.draw(context);
-	});
+	var commands = this.frames[frame].commands;
+	for(var i = 0; i < commands.length; i++)
+		commands[i].draw(context);
 };
 
 Object.defineProperty(PebbleDrawCommandSequence.prototype, 'duration', {

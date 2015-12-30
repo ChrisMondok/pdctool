@@ -24,7 +24,7 @@ function PebbleDrawCommand(reader) {
 		this.points[i] = readPoint(reader, this.type == 3);
 }
 
-PebbleDrawCommand.prototype.draw = function(ctx) {
+PebbleDrawCommand.prototype.draw = function drawCommand(ctx) {
 	ctx.lineWidth = this.strokeWidth;
 	ctx.lineCap = 'round';
 
@@ -47,9 +47,8 @@ PebbleDrawCommand.prototype.draw = function(ctx) {
 function drawPath(ctx) {
 	ctx.beginPath();
 
-	this.points.forEach(function(point) {
-		ctx.lineTo(point.x, point.y);
-	});
+	for(var i = 0; i < this.points.length; i++)
+		ctx.lineTo(this.points[i].x, this.points[i].y);
 
 	if(this.open)
 		ctx.stroke();
@@ -61,12 +60,13 @@ function drawPath(ctx) {
 }
 
 function drawCircle(ctx) {
-	this.points.forEach(function(point) {
+	for(var i = 0; i < this.points.length; i++) {
+		var point = this.points[i];
 		ctx.beginPath();
 		ctx.arc(point.x, point.y, this.radius, 0, 2 * Math.PI, false);
 		ctx.fill();
 		ctx.stroke();
-	});
+	}
 }
 
 function readViewBox(reader) {

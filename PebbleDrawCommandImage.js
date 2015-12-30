@@ -15,8 +15,7 @@ function PebbleDrawCommandImage(arrayBuffer) {
 	this.commands = readCommandList(reader);
 }
 
-PebbleDrawCommandImage.prototype.draw = function(context) {
-	this.commands.forEach(function(command) {
-		command.draw(context);
-	});
+PebbleDrawCommandImage.prototype.draw = function drawImage(context, time) {
+	for(var i = 0; i < this.commands.length; i++)
+		this.commands[i].draw(context);
 };
