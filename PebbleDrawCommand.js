@@ -25,6 +25,8 @@ function PebbleDrawCommand(reader) {
 }
 
 PebbleDrawCommand.prototype.draw = function drawCommand(ctx) {
+	if(this.hidden)
+		return;
 	ctx.lineWidth = this.strokeWidth;
 	ctx.lineCap = 'round';
 
@@ -52,6 +54,18 @@ PebbleDrawCommand.prototype.getBounds = function() {
 		};
 	}).reduce(extendBounds);
 };
+
+Object.defineProperty(PebbleDrawCommand.prototype, 'hidden', {
+	get: function isHidden() {
+		return this.flags & 1;
+	},
+	set: function setHidden(h) {
+		if(h)
+			this.flags &= 254;
+		else
+			this.flags |= 1;
+	}
+});
 
 function extendBounds(a, b) {
 	return {
