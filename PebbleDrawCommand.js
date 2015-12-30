@@ -69,21 +69,6 @@ function drawCircle(ctx) {
 	}
 }
 
-function readViewBox(reader) {
-	var width = reader.read16(),
-		height = reader.read16();
-	return { width: width, height: height };
-}
-
-function readCommandList(reader) {
-	var commands = new Array(reader.read16());
-
-	for(var i = 0; i < commands.length; i++)
-		commands[i] = new PebbleDrawCommand(reader);
-
-	return commands;
-}
-
 function readPoint(reader, precise) {
 	var point = {};
 

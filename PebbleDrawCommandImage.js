@@ -19,3 +19,18 @@ PebbleDrawCommandImage.prototype.draw = function drawImage(context, time) {
 	for(var i = 0; i < this.commands.length; i++)
 		this.commands[i].draw(context);
 };
+
+function readViewBox(reader) {
+	var width = reader.read16(),
+		height = reader.read16();
+	return { width: width, height: height };
+}
+
+function readCommandList(reader) {
+	var commands = new Array(reader.read16());
+
+	for(var i = 0; i < commands.length; i++)
+		commands[i] = new PebbleDrawCommand(reader);
+
+	return commands;
+}

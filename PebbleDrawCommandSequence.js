@@ -25,22 +25,16 @@ function PebbleDrawCommandSequence(arrayBuffer) {
 	}
 }
 
-PebbleDrawCommandSequence.prototype.getFrame = function getFrame(time) {
-	return this.frames.find(function checkFrameTiming(frame) {
-		return frame.startTime + frame.duration >= time;
-	}) || this.frames[this.frames.length - 1];
-};
-
 PebbleDrawCommandSequence.prototype.draw = function draw(context, time) {
 	var commands = this.getFrame(time).commands;
 	for(var i = 0; i < commands.length; i++)
 		commands[i].draw(context);
 };
 
-PebbleDrawCommandSequence.prototype.drawFrame = function drawFrame(context, frame) {
-	var commands = this.frames[frame].commands;
-	for(var i = 0; i < commands.length; i++)
-		commands[i].draw(context);
+PebbleDrawCommandSequence.prototype.getFrame = function getFrame(time) {
+	return this.frames.find(function checkFrameTiming(frame) {
+		return frame.startTime + frame.duration >= time;
+	}) || this.frames[this.frames.length - 1];
 };
 
 Object.defineProperty(PebbleDrawCommandSequence.prototype, 'duration', {
