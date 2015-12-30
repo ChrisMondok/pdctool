@@ -19,27 +19,27 @@ BufferReader.prototype.getN = function(n) {
 };
 
 BufferReader.prototype.read8 = function() {
-	return this.getN(8).getInt8(0);
+	return new Int8Array(this.getN(8))[0];
 };
 
 BufferReader.prototype.read16 = function() {
-	return this.getN(16).getInt16(0);
+	return new Int16Array(this.getN(16))[0];
 };
 
 BufferReader.prototype.read32 = function() {
-	return this.getN(32).getInt32(0);
+	return new Int32Array(this.getN(32))[0];
 };
 
 BufferReader.prototype.read8U = function() {
-	return this.getN(8).getUint8(0);
+	return new Uint8Array(this.getN(8))[0];
 };
 
 BufferReader.prototype.read16U = function() {
-	return this.getN(16).getUint16(0);
+	return new Uint16Array(this.getN(16))[0];
 };
 
 BufferReader.prototype.read32U = function() {
-	return this.getN(32).getUint32(0);
+	return new Uint32Array(this.getN(32))[0];
 };
 
 Object.defineProperty(BufferReader.prototype, 'remainingBytes', {
