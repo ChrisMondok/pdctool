@@ -2,6 +2,8 @@ function getThisPartyStarted() {
 	document.body.appendChild(createUploadForm());
 }
 
+var viewers = [];
+
 function createUploadForm() {
 	var form = document.createElement('form');
 	var label = document.createElement('label');
@@ -16,33 +18,16 @@ function createUploadForm() {
 	return form;
 }
 
-function drawPDC(pdc, name) {
-	var canvas = document.createElement('canvas');
-	canvas.width = pdc.viewBox.width;
-	canvas.height = pdc.viewBox.height;
-	var context = canvas.getContext('2d');
-	context.fillStyle = 'purple';
-	context.fillRect(0, 0, canvas.width, canvas.height);
-	pdc.draw(context);
-
-	var figure = document.createElement('figure');
-	figure.appendChild(canvas);
-
-	if(name) {
-		var caption = document.createElement('figcaption');
-		caption.textContent = name;
-
-		figure.appendChild(caption);
-	}
-
-	document.body.appendChild(figure);
-}
-
 function filePicked(event) {
 	var file = event.target.files[0];
+	if(!file)
+		return;
 	readPDC(file, function(pdc) {
-		drawPDC(pdc, file.name);
+		var viewer = new PDCViewer(pdc, file.name);
+		this.viewers.push(viewer);
+		viewer.appendTo(document.body);
 	});
+	event.target.value = '';
 }
 
 function readPDC(file, callback) {
@@ -74,5 +59,19 @@ function loadPDC(arrayBuffer) {
 			throw new Error("Bad magic.");
 	}
 }
+
+var lastTs = 0;
+function drawAll(ts) {
+	var delta = ts - lastTs;
+	lastTs = ts;
+
+	viewers.forEach(function(v) {
+		v.draw(delta);
+	});
+
+	requestAnimationFrame(drawAll);
+}
+
+requestAnimationFrame(drawAll);
 
 addEventListener('load', getThisPartyStarted);

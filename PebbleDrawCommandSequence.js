@@ -17,9 +17,19 @@ function PebbleDrawCommandSequence(arrayBuffer) {
 
 	this.frames = new Array(reader.read16());
 
-	for(var i = 0; i < this.frames.length; i++)
+	var startTime = 0;
+	for(var i = 0; i < this.frames.length; i++) {
 		this.frames[i] = readFrame(reader);
+		this.frames[i].startTime = startTime;
+		startTime += this.frames[i].duration;
+	}
 }
+
+PebbleDrawCommandSequence.prototype.getFrame = function(time) {
+	return this.frames.find(function(frame) {
+		return frame.startTime + frame.duration >= time;
+	}) || this.frames[this.frames.length - 1];
+};
 
 function readFrame(reader) {
 	var frame = {};
@@ -31,8 +41,10 @@ function readFrame(reader) {
 	return frame;
 }
 
-PebbleDrawCommandSequence.prototype.draw = function(context) {
-	this.drawFrame(context, 0);
+PebbleDrawCommandSequence.prototype.draw = function(context, time) {
+	this.getFrame(time).commands.forEach(function(command) {
+		command.draw(context);
+	});
 };
 
 PebbleDrawCommandSequence.prototype.drawFrame = function(context, frame) {
@@ -40,3 +52,10 @@ PebbleDrawCommandSequence.prototype.drawFrame = function(context, frame) {
 		command.draw(context);
 	});
 };
+
+Object.defineProperty(PebbleDrawCommandSequence.prototype, 'duration', {
+	get: function() {
+		var lastFrame = this.frames[this.frames.length - 1];
+		return lastFrame.startTime + lastFrame.duration;
+	}
+});

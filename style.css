@@ -9,3 +9,7 @@ canvas {
 figure {
 	margin: 1em;
 }
+
+.controls > * {
+	display: block;
+}
