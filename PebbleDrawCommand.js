@@ -86,13 +86,13 @@ function drawPath(ctx) {
 	for(var i = 0; i < this.points.length; i++)
 		ctx.lineTo(this.points[i].x, this.points[i].y);
 
-	if(this.open)
-		ctx.stroke();
-	else {
+	if(!this.open) {
 		ctx.closePath();
 		ctx.fill();
-		ctx.stroke();
 	}
+
+	if(this.strokeWidth)
+		ctx.stroke();
 }
 
 function drawCircle(ctx) {
