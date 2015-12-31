@@ -1,9 +1,7 @@
 function PDCViewer(pdc, dom) {
 	this.pdc = pdc;
-	this.overflow = Math.ceil(this.pdc.getOverflow());
-	this.backgroundColor = 'purple';
 	this.bindToDom(dom);
-	this.draw();
+	this.pdcCanvas = new PDCCanvas(pdc, this.canvas);
 	if(pdc instanceof PebbleDrawCommandSequence) {
 		this.elapsed = 0;
 		this.playing = true;
@@ -17,33 +15,12 @@ PDCViewer.prototype.draw = function(dt) {
 			this.elapsed = 0;
 	}
 
-	this.context.save();
-	this.context.fillStyle = this.backgroundColor;
-	this.context.fillRect(0, 0, this.context.canvas.width, this.context.canvas.height);
-
-	this.context.translate(this.overflow, this.overflow);
-
-	if(this.overflow > 0) {
-		this.context.lineWidth = 1;
-		this.context.strokeStyle = 'white';
-		this.context.beginPath();
-		this.context.rect(0, 0, this.pdc.viewBox.width, this.pdc.viewBox.height);
-		this.context.stroke();
-	}
-
-	this.pdc.draw(this.context, this.elapsed || 0);
+	this.pdcCanvas.draw(this.elapsed || 0);
 	this.updateControls();
-
-	this.context.restore();
 };
 
 PDCViewer.prototype.bindToDom = function(dom) {
-	var canvas = dom.querySelector('canvas');
-	canvas.width = this.pdc.viewBox.width + 2 * this.overflow;
-	canvas.height = this.pdc.viewBox.height + 2 * this.overflow;
-
-	var context = canvas.getContext('2d');
-	this.context = canvas.getContext('2d');
+	this.canvas = dom.querySelector('canvas');
 
 	this.playbackControls = dom.querySelector('.playback-controls');
 	this.playbackControls.style.display = this.pdc instanceof PebbleDrawCommandSequence
@@ -79,3 +56,8 @@ PDCViewer.prototype.updateControls = function() {
 	this.playbackControls.querySelector('.elapsed').textContent = (Math.floor(this.elapsed) / 1000).toFixed(3);
 	this.playbackControls.querySelector('.duration').textContent = (this.pdc.duration / 1000).toFixed(3);
 };
+
+Object.defineProperty(PDCViewer.prototype, 'backgroundColor', {
+	get: function() { return this.pdcCanvas.backgroundColor; },
+	set: function(c) { return this.pdcCanvas.backgroundColor = c; }
+});
