@@ -15,15 +15,14 @@ var viewers = [];
 
 function filePicked(event) {
 	var list = document.querySelector('#pdc-list');
-	for(var i = 0; i < event.target.files.length; i++) {
-		var file = event.target.files[i];
+	Array.prototype.forEach.call(event.target.files, function(file) {
 		readPDC(file, function addViewer(pdc) {
 			var template = document.querySelector('template[data-role=viewer]').content;
 			var content = document.importNode(template, true);
 			var figure = content.querySelector('figure');
 
 			var viewer = new PDCViewer(pdc, content);
-			this.viewers.push(viewer);
+			viewers.push(viewer);
 			viewer.backgroundColor = list.querySelector('input[type=color]').value || 'purple';
 
 			content.querySelector('.name').textContent = file.name;
@@ -39,7 +38,7 @@ function filePicked(event) {
 
 			list.insertBefore(figure, list.querySelector('form'));
 		});
-	}
+	});
 	event.target.value = '';
 }
 
