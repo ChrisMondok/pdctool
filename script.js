@@ -20,14 +20,9 @@ function filePicked(event) {
 			this.viewers.push(viewer);
 			viewer.backgroundColor = list.querySelector('input[type=color]').value || 'purple';
 
-			var remove = content.querySelector('[data-action=delete]');
+			content.querySelector('.name').textContent = file.name;
 
-			var caption = content.querySelector('figcaption');
-			caption.textContent = file.name;
-			caption.appendChild(remove);
-			figure.insertBefore(caption, figure.firstChild);
-
-			remove.addEventListener('click', function removeViewer() {
+			content.querySelector('[data-action=delete]').addEventListener('click', function removeViewer() {
 				viewers.splice(viewers.indexOf(viewer), 1);
 				list.removeChild(figure);
 			});
