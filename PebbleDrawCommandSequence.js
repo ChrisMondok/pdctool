@@ -43,7 +43,7 @@ PebbleDrawCommandSequence.prototype.getBounds = function getBounds() {
 
 PebbleDrawCommandSequence.prototype.getFrame = function getFrame(time) {
 	return this.frames.find(function checkFrameTiming(frame) {
-		return frame.startTime + frame.duration >= time;
+		return frame.startTime + frame.duration > time;
 	}) || this.frames[this.frames.length - 1];
 };
 
