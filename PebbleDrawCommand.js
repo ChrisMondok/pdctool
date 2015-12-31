@@ -86,11 +86,10 @@ function drawPath(ctx) {
 	for(var i = 0; i < this.points.length; i++)
 		ctx.lineTo(this.points[i].x, this.points[i].y);
 
-	if(!this.open) {
+	if(!this.open)
 		ctx.closePath();
-		ctx.fill();
-	}
 
+	ctx.fill();
 	if(this.strokeWidth)
 		ctx.stroke();
 }
