@@ -6,9 +6,9 @@ function PebbleDrawCommand(reader) {
 	if(this.type === 0)
 		throw new Error('Invalid command type.');
 	this.flags = reader.read8();
-	this.strokeColor = reader.read8U();
+	this.strokeColor = getColor(reader.read8U());
 	this.strokeWidth = reader.read8U();
-	this.fillColor = reader.read8U();
+	this.fillColor = getColor(reader.read8U());
 
 	var openOrRadius = reader.read16();
 	if(this.type == 2)
@@ -30,8 +30,8 @@ PebbleDrawCommand.prototype.draw = function drawCommand(ctx) {
 	ctx.lineWidth = this.strokeWidth;
 	ctx.lineCap = 'round';
 
-	ctx.fillStyle = getColor(this.fillColor).color;
-	ctx.strokeStyle = getColor(this.strokeColor).color;
+	ctx.fillStyle = this.fillColor.color;
+	ctx.strokeStyle = this.strokeColor.color;
 
 	switch(this.type) {
 		case 1:
