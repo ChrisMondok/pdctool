@@ -61,9 +61,9 @@ Object.defineProperty(PebbleDrawCommand.prototype, 'hidden', {
 	},
 	set: function setHidden(h) {
 		if(h)
-			this.flags &= 254;
-		else
 			this.flags |= 1;
+		else
+			this.flags &= 254;
 	}
 });
 
