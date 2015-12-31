@@ -3,7 +3,13 @@ addEventListener('load', function getThisPartyStarted() {
 	list.querySelector('input[type=file]').addEventListener('change', filePicked);
 	requestAnimationFrame(drawAll);
 	document.body.className = 'list';
+	editor = new PDCEditor(document.querySelector('[data-role=editor]'));
+	document.querySelector('[data-action=back]').addEventListener('click', function() {
+		document.body.className = 'list';
+	});
 });
+
+var editor = null;
 
 var viewers = [];
 
@@ -27,10 +33,19 @@ function filePicked(event) {
 				list.removeChild(figure);
 			});
 
+			content.querySelector('[data-action=edit]').addEventListener('click', function () {
+				edit(pdc);
+			});
+
 			list.insertBefore(figure, list.querySelector('form'));
 		});
 	}
 	event.target.value = '';
+}
+
+function edit(pdc) {
+	document.body.className = 'edit';
+	editor.setPdc(pdc);
 }
 
 function readPDC(file, callback) {
@@ -70,6 +85,7 @@ function drawAll(ts) {
 
 	for(var i = 0; i < viewers.length; i++)
 		viewers[i].draw(delta);
+	editor.draw();
 
 	requestAnimationFrame(drawAll);
 }

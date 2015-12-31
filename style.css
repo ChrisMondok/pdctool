@@ -28,7 +28,24 @@ figcaption button {
 	margin-left: 1em;
 }
 
+input[type=number] {
+	text-align: right;
+}
+
+.columns {
+	display: flex;
+	flex-direction: row;
+}
+
+select[name=commands] {
+	counter-reset: commands -1;
+}
+
+select[name=commands] option:before {
+	content: counter(commands) ". ";
+	counter-increment: commands;
+}
+
 #pdc-list, #pdc-editor { display: none; }
 body.list #pdc-list { display: block; }
 body.edit #pdc-editor { display: block; }
-

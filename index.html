@@ -5,10 +5,13 @@
 		<script src="script.js"> </script>
 		<script src="BufferReader.js"> </script>
 		<script src="colors.js"> </script>
+		<script src="PDCCanvas.js"> </script>
 		<script src="PDCViewer.js"> </script>
+		<script src="PDCEditor.js"> </script>
 		<script src="PebbleDrawCommand.js"> </script>
 		<script src="PebbleDrawCommandImage.js"> </script>
 		<script src="PebbleDrawCommandSequence.js"> </script>
+		<script src="PebbleColorPicker.js"> </script>
 		<link rel="stylesheet" href="style.css"/>
 	</head>
 	<body>
@@ -30,13 +33,70 @@
 		</section>
 
 		<section id="pdc-editor">
-			<header> PDC Editor </header>
+			<header>
+				PDC Editor
+				<button data-action="back"> Back to list </button>
+			</header>
+
+			<form data-role="editor" class="columns">
+				<figure>
+					<canvas width="24" height="24"> </canvas>
+					<label data-role="frameLabel">
+						Frame
+						<input name="frame" type="number" min="0" />
+					</label>
+				</figure>
+				<select name="commands" size="2"> </select>
+				<fieldset name="commandProperties">
+					<legend> Properties </legend>
+
+					<label>
+						Type
+						<select name="type" data-numeric>
+							<option value="1"> Path </option>
+							<option value="2"> Circle </option>
+							<option value="3"> Precise Path </option>
+						</select>
+					</label>
+
+					<label>
+						Hidden
+						<input type="checkbox" name="hidden" />
+					</label>
+
+					<label>
+						Stroke Color
+						<select name="strokeColor"> </select>
+					</label>
+
+					<label>
+						Stroke Width
+						<input name="strokeWidth" type="number" min="0" max="255" />
+					</label>
+
+					<label>
+						Fill Color
+						<select name="fillColor"> </select>
+					</label>
+
+					<label data-role="openLabel">
+						Path Open
+						<input type="checkbox" name="open" />
+					</label>
+
+					<label data-role="radiusLabel">
+						Circle Radius
+						<input type="number" min="0" max="255" name="radius" />
+					</label>
+				</fieldset>
+			</form>
 		</section>
 
 		<template data-role="viewer">
 			<figure>
 				<figcaption>
 					<span class="name"> </span>
+					<button data-action="edit"> Edit </button>
 					<button data-action="delete"> X </button>
 				</figcaption>
 				<canvas width="24" height="24"> </canvas>
